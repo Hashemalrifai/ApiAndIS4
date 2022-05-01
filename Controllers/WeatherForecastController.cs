@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ApiAndIS4.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("[controller]/[action]")]
 public class WeatherForecastController : ControllerBase
 {
     private readonly ILogger<WeatherForecastController> _logger;
@@ -15,8 +16,15 @@ public class WeatherForecastController : ControllerBase
         this.appDbContext = appDbContext;
     }
 
-    [HttpGet(Name = "GetWeatherForecast")]
-    public IEnumerable<WeatherForecast> Get()
+    [HttpGet]
+    public IEnumerable<WeatherForecast> GetWeatherForecast()
+    {
+        return appDbContext.WeatherForecasts.ToList();
+    }
+
+    [HttpGet]
+    [Authorize(AuthenticationSchemes ="Bearer")]
+    public IEnumerable<WeatherForecast> GetWeatherForecastAuthorized()
     {
         return appDbContext.WeatherForecasts.ToList();
     }
